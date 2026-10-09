@@ -35,27 +35,28 @@ describe('Brand', () => {
         }
     });
 
-    it('loads the small logo SVG from the configured browser base path', () => {
-        const component = fixture.componentInstance as unknown as { iconUrl: () => string };
+    it('loads the wordmark SVG from the configured browser base path', () => {
+        const component = fixture.componentInstance as unknown as { logoUrl: () => string };
 
-        expect(component.iconUrl()).toBe('/hitkeep/brand-icon.svg');
+        expect(component.logoUrl()).toBe('/hitkeep/brand-logo.svg');
     });
 
-    it('loads the large logo SVG from the configured browser base path', () => {
+    it('scales the wordmark for the large size', () => {
         const largeFixture = TestBed.createComponent(Brand);
 
         largeFixture.componentRef.setInput('size', 'large');
         largeFixture.detectChanges();
 
-        const component = largeFixture.componentInstance as unknown as { iconUrl: () => string };
+        const image = largeFixture.nativeElement.querySelector('img');
 
-        expect(component.iconUrl()).toBe('/hitkeep/brand-icon.svg');
+        expect(image?.classList.contains('h-12')).toBe(true);
+        expect(image?.getAttribute('width')).not.toBe(fixture.nativeElement.querySelector('img')?.getAttribute('width'));
     });
 
-    it('marks the logo image for dark-mode color treatment', () => {
+    it('describes the wordmark for screen readers', () => {
         const image = fixture.nativeElement.querySelector('img');
 
-        expect(image?.classList.contains('hk-brand-icon')).toBe(true);
+        expect(image?.getAttribute('alt')).toContain('Analytics');
     });
 
     it('routes the brand to the configured app root without a document navigation', () => {
@@ -63,6 +64,5 @@ describe('Brand', () => {
 
         expect(fixture.debugElement.query(By.directive(RouterLink))).not.toBeNull();
         expect(link?.getAttribute('href')).toBe('/hitkeep/');
-        expect(link?.textContent).toContain('HitKeep');
     });
 });
